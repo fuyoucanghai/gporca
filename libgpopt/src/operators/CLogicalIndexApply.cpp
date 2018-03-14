@@ -7,7 +7,7 @@
 
 #include "gpos/base.h"
 #include "gpopt/operators/CLogicalIndexApply.h"
-#include "naucrates/statistics/CStatisticsUtils.h"
+#include "naucrates/statistics/CJoinStatsProcessor.h"
 
 using namespace gpopt;
 
@@ -107,7 +107,13 @@ CLogicalIndexApply::PstatsDerive
 	pdrgpstat->Append(pstatsOuter);
 	pstatsInner->AddRef();
 	pdrgpstat->Append(pstatsInner);
-	IStatistics *pstats = CStatisticsUtils::PstatsJoinArray(pmp, m_fOuterJoin, pdrgpstat, pexprScalar);
+	IStatistics::EStatsJoinType eStatsJoinType = IStatistics::EsjtInnerJoin;
+	// we use Inner Join semantics here except in the case of Left Outer Join
+	if (m_fOuterJoin)
+	{
+		eStatsJoinType = IStatistics::EsjtLeftOuterJoin;
+	}
+	IStatistics *pstats = CJoinStatsProcessor::PstatsJoinArray(pmp, pdrgpstat, pexprScalar, eStatsJoinType);
 	pdrgpstat->Release();
 
 	return pstats;

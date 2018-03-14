@@ -440,9 +440,9 @@ namespace gpnaucrates
 			static
 			BOOL FSupportsFilter(CStatsPred::EStatsCmpType escmpt);
 
-			// is comparison type supported for joins
+			// is the join predicate's comparison type supported
 			static
-			BOOL FSupportsJoin(CStatsPred::EStatsCmpType escmpt);
+			BOOL FSupportsJoinPred(CStatsPred::EStatsCmpType escmpt);
 
 			// create the default histogram for a given column reference
 			static
